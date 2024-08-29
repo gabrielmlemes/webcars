@@ -1,10 +1,14 @@
 import Container from "../../components/container";
 import logoImg from "../../assets/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputStyle from "../../components/input-style";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { auth } from "../../services/firebaseConnection";
+import { createUserWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { useEffect } from "react";
 
 const schema = z.object({
   email: z
@@ -21,6 +25,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -30,8 +36,30 @@ const Register = () => {
     mode: "onChange",
   });
 
-  function onSubmit(data: FormData) {
-    console.log(data);
+  useEffect(()=> {
+    async function handleLogout() {
+      await signOut(auth)
+    }
+    
+    handleLogout()
+  }, [])
+
+  async function onSubmit(data: FormData) {
+    createUserWithEmailAndPassword(auth, data.email, data.password).then(
+      async (user) => {
+        await updateProfile(user.user, {
+          displayName: data.completeName,
+          
+        });
+        
+        navigate("/dashboard", { replace: true });
+        console.log('CADASTRADO COM SUCESSO')
+      }
+    )
+
+    .catch((error)=> {
+      console.log(error);
+    })
   }
 
   return (
@@ -78,11 +106,13 @@ const Register = () => {
             type="submit"
             className="bg-zinc-900 text-white w-full rounded-md h-10 font-medium"
           >
-            Acessar
+            Cadastrar
           </button>
         </form>
 
-        <Link to="/login">Já possui uma conta? <strong>Faça login</strong></Link>
+        <Link to="/login">
+          Já possui uma conta? <strong>Faça login</strong>
+        </Link>
       </div>
     </Container>
   );

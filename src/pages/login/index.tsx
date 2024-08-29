@@ -5,6 +5,11 @@ import InputStyle from "../../components/input-style";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from "../../services/firebaseConnection";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 
 const schema = z.object({
   email: z
@@ -17,6 +22,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Login = () => {
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -26,8 +33,25 @@ const Login = () => {
     mode: "onChange",
   });
 
+  useEffect(()=> {
+    async function handleLogout() {
+      await signOut(auth)
+    }
+    
+    handleLogout()
+  }, [])
+
   function onSubmit(data: FormData) {
-    console.log(data);
+    signInWithEmailAndPassword(auth, data.email, data.password)
+    .then((user)=> {
+      console.log('LOGADO COM SUCESSO');
+      console.log(user);
+      
+      navigate('/dashboard', {replace: true})
+    })
+    .catch((error)=> {
+      console.log(error);
+    })
   }
 
   return (
