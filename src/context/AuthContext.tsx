@@ -4,7 +4,7 @@ import { auth } from "../services/firebaseConnection";
 
 type AuthContextData = {
   signed: boolean;
-  loadingAuth: boolean
+  loadingAuth: boolean;
 };
 
 interface AuthProviderProps {
@@ -32,10 +32,10 @@ function AuthProvider({ children }: AuthProviderProps) {
           email: user?.email,
         });
         setLoadingAuth(false);
+      } else {
+        setUser(null);
+        setLoadingAuth(false);
       }
-
-      setUser(null);
-      setLoadingAuth(false);
     });
 
     return () => {
@@ -44,7 +44,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={({ signed: !!user, loadingAuth })}>
+    <AuthContext.Provider value={{ signed: !!user, loadingAuth }}>
       {children}
     </AuthContext.Provider>
   );

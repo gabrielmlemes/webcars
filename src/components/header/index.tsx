@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import logoImg from "../../assets/logo.svg";
 import { FiUser, FiLogIn } from "react-icons/fi";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Header = () => {
-  const signed = false;
-  const loadingAuth = false;
 
+  const {signed, loadingAuth} = useContext(AuthContext)
+  
   return (
     <div className="w-full drop-shadow mb-4 bg-white flex items-center justify-center h-16">
       <header className="flex w-full max-w-7xl px-4 mx-auto items-center justify-between">
