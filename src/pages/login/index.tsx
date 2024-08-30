@@ -36,6 +36,7 @@ const Login = () => {
   useEffect(()=> {
     async function handleLogout() {
       await signOut(auth)
+      console.log('Logout feito com sucesso');
     }
     
     handleLogout()
