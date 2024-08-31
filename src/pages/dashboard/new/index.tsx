@@ -1,8 +1,11 @@
+import Container from "../../../components/container";
+import PanelHeader from "../../../components/panelheader";
+
 const New = () => {
     return ( 
-        <div>
-            <h1>Página Cadastrar</h1>
-        </div>
+        <Container>
+            <PanelHeader/>
+        </Container>
      );
 }
  
