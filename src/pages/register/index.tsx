@@ -7,8 +7,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { auth } from "../../services/firebaseConnection";
-import { createUserWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
-import { useEffect } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
+import { useEffect, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const schema = z.object({
   email: z
@@ -26,7 +31,7 @@ type FormData = z.infer<typeof schema>;
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const { handleInfoUser } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -36,30 +41,38 @@ const Register = () => {
     mode: "onChange",
   });
 
-  useEffect(()=> {
+  // se o usuário logado acessar a página de cadastro, automaticamente ele é deslogado
+  useEffect(() => {
     async function handleLogout() {
-      await signOut(auth)
+      await signOut(auth);
     }
-    
-    handleLogout()
-  }, [])
 
+    handleLogout();
+  }, []);
+
+  // Salvar os dados do usuário após o submit no formulário
   async function onSubmit(data: FormData) {
-    createUserWithEmailAndPassword(auth, data.email, data.password).then(
-      async (user) => {
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      // salvar o nome do usuário no displayname no firebase
+      .then(async (user) => {
         await updateProfile(user.user, {
           displayName: data.completeName,
-          
         });
-        
-        navigate("/dashboard", { replace: true });
-        console.log('CADASTRADO COM SUCESSO')
-      }
-    )
 
-    .catch((error)=> {
-      console.log(error);
-    })
+        // atualizando dados do usuário
+        handleInfoUser({
+          name: data.completeName,
+          email: data.email,
+          uid: user.user.uid,
+        });
+
+        navigate("/dashboard", { replace: true });
+        console.log("CADASTRADO COM SUCESSO");
+      })
+
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
