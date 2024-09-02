@@ -9,14 +9,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const schema = z.object({
   name: z.string().nonempty('O campo "nome" é obrigatório'),
   model: z.string().nonempty("O modelo é obrigatório"),
-  year: zstring().nonempty("O ano do carro é obrigatório"),
+  year: z.string().nonempty("O ano do carro é obrigatório"),
   km: z.string().nonempty("O KM do carro é obrigatório"),
   price: z.string().nonempty("O preço do carro é obrigatório"),
   city: z.string().nonempty("A cidade é obrigatória"),
   whatsapp: z
     .string()
     .min(1, "O telefone é obrigatório")
-    .refine((value) => /^(\d{10,11})$/.test(value), {
+    .refine((value) => /^(\d{11,12})$/.test(value), {
       message: "Número de telefone inválido",
     }),
   description: z.string().nonempty("A descrição é obrigatória"),
@@ -34,6 +34,10 @@ const New = () => {
     resolver: zodResolver(schema),
     mode: "onChange",
   });
+
+  function onSubmit(data: FormData) {
+    console.log(data);
+  }
 
   return (
     <Container>
@@ -54,7 +58,119 @@ const New = () => {
         </button>
       </div>
 
-      <div className="w-full bg-white p-3 rounded-lg flex flex-col items-centergap-2 mt-2 sm:flex-row"></div>
+      <div className="w-full bg-white p-3 rounded-lg flex flex-col items-centergap-2 mt-2 sm:flex-row">
+        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+          {/* Nome do carro */}
+          <div className="mb-3">
+            <p className="mb-2 font-medium">Nome do carro</p>
+            <InputStyle
+              type="text"
+              register={register}
+              name="name"
+              error={errors?.name?.message}
+              placeholder="Ex: Onix"
+            />
+          </div>
+
+          {/* Modelo do carro */}
+          <div className="mb-3">
+            <p className="mb-2 font-medium">Modelo do carro</p>
+            <InputStyle
+              type="text"
+              register={register}
+              name="model"
+              error={errors?.model?.message}
+              placeholder="Ex: 1.0/Flex/Manual"
+            />
+          </div>
+
+          {/* Ano e Km*/}
+          <div className="flex gap-4 w-full mb-3 flex-row items-center">
+            {/* Ano */}
+            <div className="w-full">
+              <p className="mb-2 font-medium">Ano</p>
+              <InputStyle
+                type="text"
+                register={register}
+                name="year"
+                error={errors?.year?.message}
+                placeholder="Ex: 2023/2024"
+              />
+            </div>
+            {/* Km */}
+            <div className="w-full">
+              <p className="mb-2 font-medium">Km rodados</p>
+              <InputStyle
+                type="text"
+                register={register}
+                name="km"
+                error={errors?.km?.message}
+                placeholder="Ex: 22.000 km"
+              />
+            </div>
+          </div>
+
+          {/* Contato e Cidade*/}
+          <div className="flex gap-4 w-full mb-3 flex-row items-center">
+            {/* Whatsapp */}
+            <div className="w-full">
+              <p className="mb-2 font-medium">Whatsapp</p>
+              <InputStyle
+                type="text"
+                register={register}
+                name="whatsapp"
+                error={errors?.whatsapp?.message}
+                placeholder="Ex: 61912345678"
+              />
+            </div>
+            {/* Cidade */}
+            <div className="w-full">
+              <p className="mb-2 font-medium">Cidade</p>
+              <InputStyle
+                type="text"
+                register={register}
+                name="city"
+                error={errors?.city?.message}
+                placeholder="Ex: Brasília - DF"
+              />
+            </div>
+          </div>
+
+          {/* Preço */}
+          <div className="mb-3">
+            <p className="mb-2 font-medium">Preço - R$</p>
+            <InputStyle
+              type="text"
+              register={register}
+              name="price"
+              error={errors?.price?.message}
+              placeholder="Ex: 69.000"
+            />
+          </div>
+
+          {/* Descrição */}
+          <div className="mb-3">
+            <p className="mb-2 font-medium">Descrição</p>
+            <textarea
+              {...register("description")}
+              name="description"
+              className="border-2 w-full rounded-md h-24 px-2 "
+              id="description"
+              placeholder="Digite a descrição completa do carro"
+            >
+              {errors.description && (
+                <p className="mb-1 text-red-500">
+                  {errors.description.message}
+                </p>
+              )}
+            </textarea>
+          </div>
+
+          <button type="submit" className="rounded-md bg-zinc-900 text-white font-medium w-full h-10">
+            Cadastrar
+          </button>
+        </form>
+      </div>
     </Container>
   );
 };
