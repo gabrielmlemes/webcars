@@ -1,7 +1,12 @@
+import { useParams } from "react-router-dom";
+
 const CarDetail = () => {
+  const {id} = useParams()
+
   return (
-    <div>
-      <h1>pagina detalhes</h1>
+    <div className="min-h-screen">
+      <h1>pagina detalhes: {id}</h1>
+      
     </div>
   );
 };

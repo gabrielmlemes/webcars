@@ -8,13 +8,14 @@ import InputStyle from "../../../components/input-style";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidV4 } from "uuid";
-import { storage } from "../../../services/firebaseConnection";
+import { storage, db } from "../../../services/firebaseConnection";
 import {
   ref,
   uploadBytes,
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
 
 const schema = z.object({
   name: z.string().min(1, 'O campo "nome" é obrigatório'),
@@ -57,7 +58,41 @@ const New = () => {
 
   // Submit do formulário
   function onSubmit(data: FormData) {
-    console.log(data);
+    if (carImages.length === 0) {
+      alert("Envie alguma imagem");
+      return;
+    }
+
+    const carListImages = carImages.map((car) => {
+      return {
+        name: car.name,
+        url: car.url,
+        uid: car.uid,
+      };
+    });
+
+    // Salvar no banco de dados as informações do formulário
+    addDoc(collection(db, "cars"), {
+      name: data.name,
+      model: data.model,
+      year: data.year,
+      km: data.km,
+      price: data.price,
+      city: data.city,
+      whatsapp: data.whatsapp,
+      description: data.description,
+      created: new Date(),
+      owner: user?.name,
+      uid: user?.uid,
+      images: carListImages,
+    })
+      .then(() => {
+          reset() // limpar os campos do formulário
+          setCarImages([])
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   // Validação e envio da imagem para o storage
@@ -97,21 +132,18 @@ const New = () => {
     });
   }
 
-  // Deletar imagem 
+  // Deletar imagem
   async function handleDeleteImage(item: ImagemItemProps) {
-    const imagePath = `images/${item.uid}/${item.name}`
-    
-    const imageRef = ref(storage, imagePath)
+    const imagePath = `images/${item.uid}/${item.name}`;
+
+    const imageRef = ref(storage, imagePath);
 
     try {
-      await  deleteObject(imageRef)
-      setCarImages(carImages.filter((car) => car.url !== item.url))
-      console.log('carro deletado');
-      
-
+      await deleteObject(imageRef);
+      setCarImages(carImages.filter((car) => car.url !== item.url));
+      console.log("carro deletado");
     } catch (error) {
       console.log(error);
-      
     }
   }
 
@@ -139,7 +171,10 @@ const New = () => {
             key={item.name}
             className="w-full h-32 flex items-center justify-center relative"
           >
-            <button className="absolute" onClick={()=> handleDeleteImage(item)}>
+            <button
+              className="absolute"
+              onClick={() => handleDeleteImage(item)}
+            >
               <FiTrash size={28} color="#fff" />
             </button>
             <img

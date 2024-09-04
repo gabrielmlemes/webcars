@@ -11,7 +11,7 @@ const Private = ({ children }: PrivateProps) => {
   const { loadingAuth, signed } = useContext(AuthContext);
 
   if (loadingAuth) {
-    return <div><h1>Carregando</h1></div>;
+    return <div className="min-h-screen"></div>;
   }
 
   if (!signed) {
