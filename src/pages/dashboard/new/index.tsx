@@ -73,7 +73,7 @@ const New = () => {
 
     // Salvar no banco de dados as informações do formulário
     addDoc(collection(db, "cars"), {
-      name: data.name,
+      name: data.name.toUpperCase(),
       model: data.model,
       year: data.year,
       km: data.km,

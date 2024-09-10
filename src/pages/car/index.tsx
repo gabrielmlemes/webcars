@@ -67,7 +67,7 @@ const CarDetail = () => {
     }
 
     loadCar();
-  }, [id]);
+  }, [id, navigate]);
 
   useEffect(() => {
     function handleResizer() {
