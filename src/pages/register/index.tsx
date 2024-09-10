@@ -14,6 +14,7 @@ import {
 } from "firebase/auth";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   email: z
@@ -66,8 +67,8 @@ const Register = () => {
           uid: user.user.uid,
         });
 
+        toast.success("Cadastro realizado com sucesso. Bem vindo(a) ao Web Carros!")
         navigate("/dashboard", { replace: true });
-        console.log("CADASTRADO COM SUCESSO");
       })
 
       .catch((error) => {

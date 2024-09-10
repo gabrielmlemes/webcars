@@ -14,6 +14,7 @@ import { CarProps } from "../home";
 import { db, storage } from "../../services/firebaseConnection";
 import { deleteObject, ref } from "firebase/storage";
 import { AuthContext } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const [cars, setCars] = useState<CarProps[]>([]);
@@ -58,6 +59,7 @@ const Dashboard = () => {
 
     const docRef = doc(db, "cars", itemCar.id);
     await deleteDoc(docRef);
+    toast.success("Anúncio deletado com sucesso!")
 
     //deletar a imagem do storage
     itemCar.images.map(async (image) => {
