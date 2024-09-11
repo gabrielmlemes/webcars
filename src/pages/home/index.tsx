@@ -68,7 +68,7 @@ const Home = () => {
       loadCars();
       return;
     }
-
+    // Limpa dados anteriores
     setCarInfo([]);
     setLoadImages([]);
 
@@ -96,7 +96,7 @@ const Home = () => {
       });
     });
 
-    setCarInfo(carsList)
+    setCarInfo(carsList);
   }
 
   return (
@@ -125,7 +125,7 @@ const Home = () => {
           <Link to={`/car/${car.id}`}>
             <section
               className="w-full rounded-lg overflow-hidden border border-slate-300"
-              key={car.name}
+              key={car.id}
             >
               {/* Div para evitar o layoutshift da imagem */}
               <div
@@ -137,11 +137,11 @@ const Home = () => {
               <img
                 src={car.images[0].url}
                 alt="Imagem carro"
-                className=" w-full mb-2 max-h-72 hover:scale-105 transition-all"
+                className=" w-full mb-2 max-h-[255px] hover:scale-105 transition-all"
                 onLoad={() => handleImageLoad(car.id)}
               />
 
-              <div className="flex flex-col pt-1 ">
+              <div className="flex flex-col pt-1 bg-slate-100">
                 <p className="font-bold pl-2">{car.name}</p>
                 <p className="text-sm pl-2 text-zinc-700 font-medium mb-4">
                   {car.year} | {car.km}km
