@@ -39,6 +39,6 @@
 
 ## 📄 Licença
 
-Esse projeto está sob a licença MIT license - acesse os detalhes [LICENSE.md](https://github.com/gabrielmlemes/LandingPageBarberShop/blob/master/LICENSE)).
+Esse projeto está sob a licença MIT license - acesse os detalhes [LICENSE.md](https://github.com/gabrielmlemes/webcars/commit/3120e4de64cb6a3bfa9984177ede7b1d7e77730c)).
 
 * MEU LINKTREE: ([Linktree](https://link-tree-gabriel-lemes.vercel.app/))
